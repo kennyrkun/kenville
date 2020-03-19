@@ -4,6 +4,8 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
+#include "PlayerCharacter.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <string>	
@@ -36,6 +38,8 @@ private:
 	AppEngine* app = nullptr;
 
 	void updateGameCamera();
+
+	PlayerCharacter playerCharacter;
 
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;

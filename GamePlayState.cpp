@@ -163,6 +163,26 @@ void GamePlayState::HandleEvents()
 
 		if (app->window.hasFocus())
 		{
+			int moveX = 0, moveY = 0;
+			int moveAmount = baseViewSpeed * timePerFrame.asSeconds();
+
+			// keyboard based camera movement
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraUp))
+				moveY -= moveAmount;
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraDown))
+				moveY += moveAmount;
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraLeft))
+				moveX -= moveAmount;
+			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraRight))
+				moveX += moveAmount;
+
+			sf::Vector2f newPosition = playerCharacter.getPosition() + sf::Vector2f(moveX, moveY);
+
+			newPosition.x = std::clamp(newPosition.x, -400.f, 400.f);
+			newPosition.y = std::clamp(newPosition.y, -300.f, 300.f);
+
+			playerCharacter.setPosition(newPosition);
+
 			updateGameCamera();
 
 			// todo: clamp the mouse and keep it in the window
@@ -188,6 +208,7 @@ void GamePlayState::Draw()
 	app->window.setView(*mainView2);
 
 	app->window.draw(world);
+	app->window.draw(playerCharacter);
 
 	// ------------- ANCHOR
 	app->window.setView(*viewAnchor);
@@ -201,47 +222,6 @@ void GamePlayState::Draw()
 
 void GamePlayState::updateGameCamera()
 {
-	int moveX = 0, moveY = 0;
-	int moveAmount = baseViewSpeed * timePerFrame.asSeconds();
-
-	// keyboard based camera movement
-	if (sf::Keyboard::isKeyPressed(app->keys.moveCameraUp))
-		moveY -= moveAmount;
-	if (sf::Keyboard::isKeyPressed(app->keys.moveCameraDown))
-		moveY += moveAmount;
-	if (sf::Keyboard::isKeyPressed(app->keys.moveCameraLeft))
-		moveX -= moveAmount;
-	if (sf::Keyboard::isKeyPressed(app->keys.moveCameraRight))
-		moveX += moveAmount;
-
-	/*
-	if (app->settings.mouseMoveEnabled)
-	{
-		// mouse based camera movement
-		float width = app->settings.mouseMoveBorderWidth;
-		sf::FloatRect left(0, 0, width, app->window.getSize().y);
-		sf::FloatRect right(app->window.getSize().x - width, 0, width, app->window.getSize().y);
-		sf::FloatRect up(0, 0, app->window.getSize().x, width);
-		sf::FloatRect down(0, app->window.getSize().y - width, app->window.getSize().x, width);
-
-		sf::Vector2f mousePos = app->window.mapPixelToCoords(sf::Mouse::getPosition(app->window), *viewAnchor);
-
-		if (up.contains(mousePos))
-			moveY -= moveAmount;
-		if (down.contains(mousePos))
-			moveY += moveAmount;
-		if (left.contains(mousePos))
-			moveX -= moveAmount;
-		if (right.contains(mousePos))
-			moveX += moveAmount;
-	}
-	*/
-
-	sf::Vector2f newPosition = mainView2->getCenter() + sf::Vector2f(moveX, moveY);
-
-	newPosition.x = std::clamp(newPosition.x, -400.f, 400.f);
-	newPosition.y = std::clamp(newPosition.y, -300.f, 300.f);
-
-	mainView2->setCenter(newPosition);
+	mainView2->setCenter(playerCharacter.getPosition());
 }
 
