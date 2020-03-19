@@ -1,6 +1,8 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
+#include <SFUI/Theme.hpp>
+
 #include <iostream>
 #include <experimental/filesystem>
 
@@ -49,15 +51,28 @@ void AppEngine::Init(AppSettings settings_)
 			settings.graphics.maxfps = std::stoi(settings.launchOptions.argv[i += 1]);
 	}
 
-	if (!fs::exists("./rmm"))
+	window.create(sf::VideoMode(settings.graphics.width, settings.graphics.height), settings.title);
+
+	if (!fs::exists(settings.workDir))
 	{
-		fs::create_directory("./rmm");
-		fs::create_directory("./rmm/resource");
-		fs::create_directory("./rmm/resource/textures");
-		fs::create_directory("./rmm/resource/fonts");
-		fs::create_directory("./rmm/cache");
-		fs::create_directory("./rmm/cache/rooms");
+		fs::create_directory(settings.workDir);
+		fs::create_directory(settings.workDir + "resource");
+		fs::create_directory(settings.workDir + "resource/textures");
+		fs::create_directory(settings.workDir + "resource/fonts");
 	}
+
+	SFUI::Theme::loadFont(settings.workDir + "resources/fonts/Arial.ttf");
+	SFUI::Theme::loadTexture(settings.workDir + "resources/textures/square.png");
+
+	SFUI::Theme::textCharacterSize = 11;
+	SFUI::Theme::click.textColor = SFUI::Theme::hexToRgb("#191B18");
+	SFUI::Theme::click.textColorHover = SFUI::Theme::hexToRgb("#191B18");
+	SFUI::Theme::click.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::input.textColor = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::input.textColorHover = SFUI::Theme::hexToRgb("#CC7A00");
+	SFUI::Theme::input.textColorFocus = SFUI::Theme::hexToRgb("#000000");
+	SFUI::Theme::windowBgColor = SFUI::Theme::hexToRgb("#dddbde");
+	SFUI::Theme::PADDING = 2.f;
 
 	running = true;
 

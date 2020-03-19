@@ -12,7 +12,7 @@ class AppState;
 struct AppSettings
 {
 	std::string version = "1-20w07a";
-	std::string title = "rmm " + version;
+	std::string title = "kenville " + version;
 
 	struct CommandLineArguments
 	{
@@ -30,6 +30,9 @@ struct AppSettings
 		bool useAnimations = true;
 		float animationScale = 1;
 		size_t maxfps = 60;
+
+		size_t width = 1080;
+		size_t height = 720;
 	} graphics;
 
 	struct Locale
@@ -45,6 +48,8 @@ struct AppSettings
 
 		bool connected = false;
 	} server;
+
+	std::string workDir = "./kenvillee/";
 };
 
 class AppEngine
