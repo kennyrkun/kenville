@@ -1,5 +1,5 @@
-//include "GameCreationState.hpp"
 #include "MainMenuState.hpp"
+#include "GameCreationState.hpp"
 
 void MainMenuState::Init(AppEngine* app_)
 {
@@ -70,26 +70,29 @@ void MainMenuState::HandleEvents()
 		int id = menu->onEvent(event);
 		switch (id)
 		{
-//		case MAIN_MENU_CALLBACKS::PLAY_BUTTON:
-//			std::cout << "Starting a new game...");
-//			// TODO: we should ChangeState and rebuild the menu everytime, to save memory.
-//			app->ChangeState(new GameCreationState);
-//			return;
+		case MAIN_MENU_CALLBACKS::PLAY_BUTTON:
+			std::cout << "Starting a new game..." << std::endl;
+			app->ChangeState(new GameCreationState);
+			return;
 		case MAIN_MENU_CALLBACKS::LOAD_BUTTON:
 			std::cerr << "Saving/Loading system not yet implemented." << std::endl;
 			break;
 		case MAIN_MENU_CALLBACKS::SETTINGS_BUTTON:
-			std::cerr << "Settings functions not yet implemented."  << std::endl;
+			std::cerr << "Settings system not yet implemented."  << std::endl;
 			break;
 		case MAIN_MENU_CALLBACKS::EXIT_BUTTON:
-			std::cout << "Exiting game..." << std::endl;
+			std::cout << "Exiting game.." << std::endl;
 			app->Quit();
+			return;
 		default:
 			break;
 		}
 
 		if (event.type == sf::Event::EventType::Closed)
+		{
 			app->Quit();
+			return;		
+		}
 		else if (event.type == sf::Event::EventType::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::Key::Tilde)
@@ -139,8 +142,6 @@ void MainMenuState::Draw()
 
 	app->window.display();
 }
-
-// public:
 
 bool MainMenuState::mouseIsOver(sf::Shape &object)
 {

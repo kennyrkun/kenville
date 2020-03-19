@@ -1,5 +1,5 @@
-#ifndef MAIN_MENU_STATE
-#define MAIN_MENU_STATE
+#ifndef MAIN_MENU_STATE_HPP
+#define MAIN_MENU_STATE_HPP
 
 #include "AppEngine.hpp"
 #include "AppState.hpp"
@@ -52,4 +52,4 @@ private:
 	};
 };
 
-#endif // !MAIN_MENU_STATE
+#endif // !MAIN_MENU_STATE_HPP

@@ -52,6 +52,15 @@ struct AppSettings
 	std::string workDir = "./kenvillee/";
 };
 
+struct Keybindings
+{
+	sf::Keyboard::Key moveCameraUp = sf::Keyboard::Key::W;
+	sf::Keyboard::Key moveCameraLeft = sf::Keyboard::Key::A;
+	sf::Keyboard::Key moveCameraDown = sf::Keyboard::Key::S;
+	sf::Keyboard::Key moveCameraRight = sf::Keyboard::Key::D;
+	sf::Keyboard::Key deleteSelected = sf::Keyboard::Key::Delete;
+};
+
 class AppEngine
 {
 public:
@@ -79,6 +88,8 @@ public:
 	sf::RenderWindow window;
 
 	std::vector<AppState*> states;
+
+	Keybindings keys;
 
 private:
 	bool running;
