@@ -17,6 +17,7 @@ public:
 	virtual void Draw() = 0;
 
 protected:
+	// TODO: look into making this a reference
 	AppEngine* app;
 };
 

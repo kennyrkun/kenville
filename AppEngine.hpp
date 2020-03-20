@@ -54,11 +54,11 @@ struct AppSettings
 
 struct Keybindings
 {
-	sf::Keyboard::Key moveCameraUp = sf::Keyboard::Key::W;
-	sf::Keyboard::Key moveCameraLeft = sf::Keyboard::Key::A;
-	sf::Keyboard::Key moveCameraDown = sf::Keyboard::Key::S;
-	sf::Keyboard::Key moveCameraRight = sf::Keyboard::Key::D;
-	sf::Keyboard::Key deleteSelected = sf::Keyboard::Key::Delete;
+	sf::Keyboard::Key movePlayerUp = sf::Keyboard::Key::W;
+	sf::Keyboard::Key movePlayerLeft = sf::Keyboard::Key::A;
+	sf::Keyboard::Key movePlayerDown = sf::Keyboard::Key::S;
+	sf::Keyboard::Key movePlayerRight = sf::Keyboard::Key::D;
+	sf::Keyboard::Key entityInteract = sf::Keyboard::Key::E;
 };
 
 class AppEngine

@@ -1,17 +1,27 @@
 #ifndef PLAYER_CHARACTER_HPP
 #define PLAYER_CHARACTER_HPP
 
-#include <SFML/Graphics.hpp>
+#include "BaseEntity.hpp"
 
-class PlayerCharacter : public sf::Drawable
+class PlayerController : public EntityComponent
 {
 public:
-	PlayerCharacter();
+	float baseMoveSpeed = 200;
+	float fastMoveSpeed = 300;
+	float slowMoveSpeed = 100;
 
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void HandleEvents(const sf::Event& event, float delta);
+};
 
-	void setPosition(const sf::Vector2f& newPosition);
-	sf::Vector2f getPosition() const;
+class PlayerCharacter : public ComponentEntity
+{
+public:
+	PlayerCharacter(int entityID, AppEngine* app);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	void setPosition(const sf::Vector2f& newPosition) override;
+	sf::Vector2f getPosition() const override;
 
 	void move(const sf::Vector2f& positionOffset);
 

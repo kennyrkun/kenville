@@ -7,8 +7,8 @@ SET(CMAKE_DEBUG_POSTFIX "-d")
 SET(PROJECT_NAME "kenville")
 PROJECT(${PROJECT_NAME} LANGUAGES CXX)
 
-SET(HEADERS ./AppEngine.hpp ./AppState.hpp ./MainMenuState.hpp ./GameCreationState.hpp ./GamePlayState.hpp ./PlayerCharacter.hpp)
-SET(SOURCES ./AppEngine.cpp ./main.cpp MainMenuState.cpp ./GameCreationState.cpp ./GamePlayState.cpp ./PlayerCharacter.cpp)
+SET(HEADERS ./AppEngine.hpp ./AppState.hpp ./MainMenuState.hpp ./GameCreationState.hpp ./GamePlayState.hpp ./PlayerCharacter.hpp ./EntityManager.hpp ./BaseEntity.hpp ./Object.hpp ./Door.hpp ./HouseExteriorEntity.hpp)
+SET(SOURCES ./AppEngine.cpp ./main.cpp MainMenuState.cpp ./GameCreationState.cpp ./GamePlayState.cpp ./PlayerCharacter.cpp ./EntityManager.cpp ./BaseEntity.cpp ./Object.cpp ./Door.cpp ./HouseExteriorEntity.cpp)
 ADD_EXECUTABLE(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC ../SFML/include)

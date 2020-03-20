@@ -1,6 +1,11 @@
 #include "GamePlayState.hpp"
 
+#include "Object.hpp"
+#include "Door.hpp"
+#include "HouseExteriorEntity.hpp"
+
 #include <iostream>
+#include <cmath>
 
 // TODO: what the fuck is this
 sf::CircleShape test;
@@ -25,6 +30,19 @@ void GamePlayState::Init(AppEngine* app_)
 	world.setOrigin(sf::Vector2f(world.getSize().x / 2, world.getSize().y / 2));
 	world.setPosition(sf::Vector2f(0, 0));
 	world.setTexture(*&worldTexture);
+	
+	entman.add(new Object("weed01.png", entman.count));
+
+	HouseExteriorEntity* house = new HouseExteriorEntity("house01.png", entman.count);
+	house->setPosition(sf::Vector2f(-200, -200));
+	entman.add(house);
+
+	Door* door = new Door(entman.count);
+	door->setPosition(sf::Vector2f(-123, -123));
+	entman.add(door);
+
+	// always add the player last
+	entman.add(playerCharacter = new PlayerCharacter(entman.count, app));
 
 	std::cout << "Preparing user interface elements..." << std::endl;
 
@@ -52,6 +70,7 @@ void GamePlayState::Cleanup()
 	app->window.setView(app->window.getDefaultView());
 
 	delete mainView2;
+	delete playerCharacter;
 	delete worldTexture;
 
 	std::cout << "Cleaned up GamePlayState." << std::endl;
@@ -110,10 +129,6 @@ void GamePlayState::HandleEvents()
 					}
 				}
 				*/
-			 	if (event.key.code == sf::Keyboard::Key::LShift)
-				{
-					baseViewSpeed = 250;
-				}
 				/*
 				else if (event.key.code == sf::Keyboard::Key::F12)
 				{
@@ -123,18 +138,48 @@ void GamePlayState::HandleEvents()
 					app->window.display();
 				}
 				*/
-				else if (event.key.code == sf::Keyboard::Key::Tilde)
+				if (event.key.code == sf::Keyboard::Key::Tilde)
 				{
 					app->settings.debug = !app->settings.debug;
 
 					std::cout << "cl_debug set to " + std::to_string(app->settings.debug) << std::endl;
 				}
-			}
-			else if (event.type == sf::Event::EventType::KeyReleased)
-			{
-				if (event.key.code == sf::Keyboard::Key::LShift)
+				else if (event.key.code == app->keys.entityInteract)
 				{
-					baseViewSpeed = 500;
+					sf::Vector2f plyPos = playerCharacter->getPosition();
+					
+					std::pair<float, BaseEntity*> closest = { std::numeric_limits<float>::max(), nullptr };
+
+					for (BaseEntity* entity : entman.entities)
+					{
+						if (entity == playerCharacter)
+							continue;
+
+						sf::Vector2f pos = entity->getPosition();
+						float xDiff = plyPos.x - pos.x;
+						float yDiff = plyPos.y - pos.y;
+						float distance = std::sqrt((xDiff * xDiff) + (yDiff * yDiff));
+
+						if (distance < closest.first)
+						{
+							closest.first = distance;
+							closest.second = entity;
+						}
+					}
+	
+					std::cout << "closest entity is " << closest.first << " away" << std::endl;
+
+					BaseEntity* entity = closest.second;
+
+					if (closest.first <= entity->maxInteractDistance)
+						entity->onInteract(playerCharacter);
+
+					/*
+					if (entity->hasComponent(new PlayerController))
+						std::cout << "entity has component" << std::endl;
+					else
+						std::cout << "entity does not have component" << std::endl;
+					*/
 				}
 			}
 			else if (event.type == sf::Event::EventType::MouseWheelMoved)
@@ -159,32 +204,14 @@ void GamePlayState::HandleEvents()
 					}
 				}
 			}
-		} // pollevent
+		} // poll event
+
+		for (BaseEntity* entity : entman.entities)
+			entity->HandleEvents(event, deltaTime.asSeconds());
 
 		if (app->window.hasFocus())
 		{
-			int moveX = 0, moveY = 0;
-			int moveAmount = baseViewSpeed * timePerFrame.asSeconds();
-
-			// keyboard based camera movement
-			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraUp))
-				moveY -= moveAmount;
-			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraDown))
-				moveY += moveAmount;
-			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraLeft))
-				moveX -= moveAmount;
-			if (sf::Keyboard::isKeyPressed(app->keys.moveCameraRight))
-				moveX += moveAmount;
-
-			sf::Vector2f newPosition = playerCharacter.getPosition() + sf::Vector2f(moveX, moveY);
-
-			newPosition.x = std::clamp(newPosition.x, -400.f, 400.f);
-			newPosition.y = std::clamp(newPosition.y, -300.f, 300.f);
-
-			playerCharacter.setPosition(newPosition);
-
 			updateGameCamera();
-
 			// todo: clamp the mouse and keep it in the window
 
 			//float frames_per_second = framesClock.restart().asSeconds();
@@ -198,6 +225,8 @@ void GamePlayState::HandleEvents()
 
 void GamePlayState::Update()
 {
+	for (BaseEntity* entity : entman.entities)
+		entity->Update();
 }
 
 void GamePlayState::Draw()
@@ -208,7 +237,9 @@ void GamePlayState::Draw()
 	app->window.setView(*mainView2);
 
 	app->window.draw(world);
-	app->window.draw(playerCharacter);
+
+	for	(BaseEntity* entity : entman.entities)
+		app->window.draw(*entity);
 
 	// ------------- ANCHOR
 	app->window.setView(*viewAnchor);
@@ -222,6 +253,6 @@ void GamePlayState::Draw()
 
 void GamePlayState::updateGameCamera()
 {
-	mainView2->setCenter(playerCharacter.getPosition());
+	mainView2->setCenter(playerCharacter->getPosition());
 }
 

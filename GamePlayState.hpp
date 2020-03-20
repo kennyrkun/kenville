@@ -4,6 +4,7 @@
 #include "AppEngine.hpp"
 #include "AppState.hpp"
 
+#include "EntityManager.hpp"
 #include "PlayerCharacter.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -39,7 +40,9 @@ private:
 
 	void updateGameCamera();
 
-	PlayerCharacter playerCharacter;
+	EntityManager entman;
+
+	PlayerCharacter* playerCharacter;
 
 	sf::Time timePerFrame; // 60 frames per second
 	sf::Time timeSinceLastUpdate;
@@ -49,7 +52,6 @@ private:
 
 	sf::View* mainView2 = nullptr;
 	sf::View* viewAnchor = nullptr;
-	int baseViewSpeed = 500;
 
 	sf::Clock deltaClock;  // tracks how much time has past since the last frame
 	sf::Clock framesClock; // for maxfps
